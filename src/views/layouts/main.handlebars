@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cristhian Erick Pabon Cuellar - Ecommerce Coderhouse</title>
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                Tienda
+            </a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="/products">Productos</a>
+                <a class="nav-link" href="#" onclick="createCart()">Crear Carrito</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        {{{body}}}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Proyecto Final Backend - Coderhouse 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        async function createCart() {
+            try {
+                const response = await fetch('/api/carts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const goToCart = confirm(`Carrito creado! ID: ${data.payload._id}\n¿Quieres ver el carrito?`);
+                    if (goToCart) {
+                        window.location.href = `/carts/${data.payload._id}`;
+                    }
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('No se pudo crear el carrito');
+            }
+        }
+
+        async function addToCart(productId, cartId = null) {
+            if (!cartId) {
+                cartId = prompt('Ingresa el ID del carrito:');
+                if (!cartId) return;
+            }
+
+            try {
+                const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ quantity: 1 })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const goToCart = confirm('Producto agregado al carrito!\n¿Quieres ver el carrito?');
+                    if (goToCart) {
+                        window.location.href = `/carts/${cartId}`;
+                    }
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('No se pudo agregar el producto al carrito');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<h1>Carrito de Compras</h1>
+
+{{#if cart.products.length}}
+<div class="cart-items">
+    {{#each cart.products}}
+    <div class="cart-item">
+        <h3>{{product.title}}</h3>
+        <p>Precio: ${{product.price}}</p>
+        <p>Cantidad: {{quantity}}</p>
+        <p>Subtotal: ${{subtotal}}</p>
+    </div>
+    {{/each}}
+</div>
+
+<div class="cart-summary">
+    <p><strong>Total de productos: {{totalItems}}</strong></p>
+    <p><strong>Total: ${{totalPrice}}</strong></p>
+</div>
+
+<a href="/products">Continuar comprando</a>
+
+{{else}}
+<p>Carrito vacío</p>
+<a href="/products">Ver productos</a>
+{{/if}}
